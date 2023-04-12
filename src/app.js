@@ -1,13 +1,15 @@
 const fs = require("fs");
+// const express = require("express");
 
 class ProductManager {
-  constructor() {
-    this.products = [];
+  constructor () {
+      this.products = [];
     this.lastId = 0;
-    this.path = "db/listProduct.json";
+    this.path = "./db/listProduct.json";
   }
 
-  //Metodo que agrega un proudcto 
+ 
+  //Metodo que agrega un producto 
   addProduct(title, description, price, thumbnail, code, stock) {
     if (!title || !description || !price || !thumbnail || !code || !stock) {
       console.log("Error: Todos los campos son Requeridos");
@@ -32,27 +34,22 @@ class ProductManager {
     })
   }
 
-  //Metodo que muestra los Productos del Archivo.
-
-  getProducts = async () => {
+//Metodo que muestra todos los productos.
+  getProducts() {
     try {
-      const data = await fs.promises.readFile(this.path, "utf-8");
-      const products = JSON.parse(data);
-      console.log(products);
-      return products;
+      const data = fs.readFileSync(this.path);
+      return JSON.parse(data);
     } catch (error) {
-      console.log(error);
-      return;
+      return [];
     }
-  };
-
+  }
   //Metodo que muestra el producto en base el ID. 
   getProductById = async (productId) => {
     const data = await fs.promises.readFile(this.path, "utf-8");
     const productsById = JSON.parse(data);
     const product = productsById.find((product) => product.id === productId);
     if (product) {
-      console.log(product);
+      console.log(product)
       return product;
     } else {
       console.log("Error: producto no encontrado");
@@ -97,18 +94,30 @@ class ProductManager {
       console.log("Producto borrado con éxito desde deleteProduct");
     });
   };
+
+  async getData() {
+    const data = await fs.promises.readFile(this.path, "utf-8");
+    return data;
+  }
+
+  async getAll() {
+    const data = await this.getData();
+    return JSON.parse(data);
+  }
 }
+module.exports = ProductManager;
 
+//funciones ejecutadas con Console.log
 
-const producto = new ProductManager();
+// const producto = new ProductManager();
 
 //Array vacio
 // console.log(producto.getProducts());
 
 
 // Agrega el producto a la instancia
-producto.addProduct('productodeprueba', 'estoesUnaPrueba', 200, 'SinImagen', 'dasd123', 23)
-producto.addProduct('productodeprueba1', 'estoesUnaPrueba1', 350, 'SinImagen', 'cod:123', 24)
+// producto.addProduct('productodeprueba', 'estoesUnaPrueba', 200, 'SinImagen', 'dasd123', 23)
+// producto.addProduct('productodeprueba1', 'estoesUnaPrueba1', 350, 'SinImagen', 'cod:123', 24)
 
 //Muestra por consola el producto cargado
 // console.log(producto.getProducts());
